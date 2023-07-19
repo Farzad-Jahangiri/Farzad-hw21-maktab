@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   TextField,
   Select,
@@ -9,55 +9,116 @@ import {
 import FormControl from "@material-ui/core/FormControl";
 import myStyle from "../style/Style";
 
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const phonePattern = /^(09\d{8})$|^(\+989\d{10})$|^(0[1-8]{1}[0-9]{9})$/;
+
 function GetData() {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [relative, setRelative] = useState("");
+  const [email, setEmail] = useState("");
+  const [errorEmail, setErrorEmail] = useState("");
+  const [errorName, setErrorName] = useState("");
+  const [errorLastName, setErrorLastName] = useState("");
+  const [errorPhoneNumber, setErrorPhoneNumber] = useState("");
+
   const Style = myStyle();
+  const submitHandler = (event) => {
+    event.preventDefault();
+  };
+
   return (
     <div>
-      <form className={Style.form} noValidate autoComplete="off">
+      <form
+        onSubmit={submitHandler}
+        className={Style.form}
+        noValidate
+        autoComplete="off"
+      >
         <TextField
-          className={Style.input}
+          className={`${Style.input} ${errorName}`}
           variant="outlined"
-          id="Name"
+          id="firstName"
           label="نام..."
+          onChange={(e) => {
+            setFirstName(e.target.value);
+            if (e.target.value.length < 2) {
+              setErrorName(Style.errorInput);
+            } else {
+              setErrorName("");
+            }
+          }}
         />
         <TextField
-          className={Style.input}
+          className={`${Style.input} ${errorLastName}`}
           variant="outlined"
-          id="Name"
+          id="lastName"
           label="نام خانوادگی"
+          onChange={(e) => {
+            setLastName(e.target.value);
+            if (e.target.value.length < 5) {
+              setErrorLastName(Style.errorInput);
+            } else {
+              setErrorLastName("");
+            }
+          }}
         />
         <TextField
-          className={Style.input}
+          className={`${Style.input} ${errorPhoneNumber}`}
           type="number"
           variant="outlined"
-          id="Name"
+          id="phoneNummber"
           label="شماره تماس"
+          onChange={(e) => {
+            setPhoneNumber(e.target.value);
+            if(!phonePattern.test(phoneNumber)){
+                setErrorPhoneNumber(Style.errorInput);
+            }else{
+                setErrorPhoneNumber("");
+            }
+        }}
         />
         <FormControl variant="outlined" className={Style.input}>
           <InputLabel id="demo-simple-select-outlined-label">نسبت</InputLabel>
           <Select
             labelId="demo-simple-select-outlined-label"
-            id="demo-simple-select-outlined"
-            
+            id="relative"
             //   onChange={handleChange}
             label="نسبت"
+            onChange={(e) => setRelative(e.target.value)}
           >
             <MenuItem value="">
-              <em>None</em>
+              <em>هیچ کس</em>
             </MenuItem>
-            <MenuItem value={10}>دوست</MenuItem>
-            <MenuItem value={20}>دایی</MenuItem>
-            <MenuItem value={30}>عمو</MenuItem>
+            <MenuItem value={1}>دوست</MenuItem>
+            <MenuItem value={2}>همکار</MenuItem>
+            <MenuItem value={3}>اعضای خانواده</MenuItem>
+            <MenuItem value={4}>آشنا</MenuItem>
           </Select>
         </FormControl>
         <TextField
-          className={Style.input}
+          className={`${Style.input} ${errorEmail}`}
           type="email"
           variant="outlined"
           id="Name"
           label="Email"
+          onChange={(e) => {
+            setEmail(e.target.value);
+            if (!emailPattern.test(email)) {
+              setErrorEmail(Style.errorInput);
+            } else {
+              setErrorEmail("");
+            }
+          }}
         />
-        <Button className={Style.button} variant="contained" color="primary" disableElevation>
+        <Button
+          type="submit"
+          className={Style.button}
+          variant="contained"
+          color="primary"
+          disableElevation
+        >
           اضافه کردن
         </Button>
       </form>
