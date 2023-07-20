@@ -19,6 +19,7 @@ const phonePattern = /^(09\d{8})$|^(\+989\d{10})$|^(0[1-8]{1}[0-9]{9})$/;
 
 function GetData() {
   const Style = myStyle();
+  const [textButtonSubmit,setTextButtonSubmit] = useState("اضافه کردن")
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -35,12 +36,19 @@ function GetData() {
   });
 
   const Edit = (data, myElement) => {
-    setFirstName(data.name);
-    setLastName(data.family);
-    setPhoneNumber(data.phone_number);
-    setRelative(data.relative);
-    setEmail(data.email);
-    setCheckEdit({ check: true, id: data.phone_number, myElement: myElement });
+    if (data) {
+      setCheckEdit({
+        check: true,
+        id: data.phone_number,
+        myElement: myElement,
+      });
+      setFirstName(data.name);
+      setLastName(data.family);
+      setPhoneNumber(data.phone_number);
+      setRelative(data.relative);
+      setEmail(data.email);
+      setTextButtonSubmit("ثبت تغییرات")
+    }
   };
 
   const { setChenge } = useContext(UseContext);
@@ -62,20 +70,26 @@ function GetData() {
   const submitHandler = (event) => {
     event.preventDefault();
     if (
-      (errorEmail !== "" &&
-        errorName !== "" &&
-        errorLastName !== "" &&
-        errorPhoneNumber !== "") ||
-      (firstName === "" &&
-        lastName === "" &&
-        phoneNumber === "" &&
-        email === "")
+      errorEmail !== "" &&
+      errorName !== "" &&
+      errorLastName !== "" &&
+      errorPhoneNumber !== ""
+    ) {
+      alert("لطفا همه مقادیر را به درستی وارد کنید");
+      return;
+    }
+    if (
+      firstName === "" &&
+      lastName === "" &&
+      phoneNumber === "" &&
+      email === ""
     ) {
       alert("لطفا همه مقادیر را پر کنید");
       return;
     }
 
     if (checkEdit.check) {
+      console.log(checkEdit);
       const contact = {
         previousId: checkEdit.id,
         id: phoneNumber,
@@ -85,15 +99,21 @@ function GetData() {
         relative: relative,
         email: email,
       };
-      dispatch(EditeCountact(contact));
-      Clear();
+
+      const confirmed = window.confirm(
+        "آیا از ثبت تغییرات این مخاطب اطمینان دارید؟"
+      );
+      if (confirmed) {
+        toast.success("Contact saved");
+        setCheckEdit({ check: false, id: "" });
+        dispatch(EditeCountact(contact));
+      }
       checkEdit.myElement.className = checkEdit.myElement.className
         .split(" ")
         .filter((className) => className !== Style.editCountactShow)
         .join(" ");
-
-      toast.success("Contact saved");
-      setCheckEdit({ check: false, id: "" });
+      Clear();
+      setTextButtonSubmit("اضافه کردن")
       return;
     }
     const contact = {
@@ -206,7 +226,7 @@ function GetData() {
           color="primary"
           disableElevation
         >
-          اضافه کردن
+          {textButtonSubmit}
         </Button>
       </form>
       <ToastContainer />

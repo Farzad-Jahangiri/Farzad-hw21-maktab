@@ -1,7 +1,19 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+const saveDataToLocalStorage = (key, data) => {
+    localStorage.setItem(key, data);
+};
+
+const readDataFromLocalStorage = (key) => {
+    const data = localStorage.getItem(key);
+    if (data){
+        return data
+    }
+    return '[]';
+};
+
 const initialState = {
-    countacts: '[{"email":"farzad292.j@gmail.com","family":"جهانگیری","id":"09029418292","name":"فرزاد","phone_number":"09029418292","relative":"دوست"}]',
+    countacts: readDataFromLocalStorage("contactsData"),
 }
 
 export const countactSlice = createSlice({
@@ -9,18 +21,17 @@ export const countactSlice = createSlice({
     initialState,
     reducers: {
         addCountact: (state, action) => {
-            // console.log(state.countacts);
             let data = JSON.parse(state.countacts);
-            // console.log(data);
             data = [...data, action.payload];
-            // console.log(data);
             state.countacts = JSON.stringify(data);
+            saveDataToLocalStorage("contactsData",JSON.stringify(data));
         },
         deleteCountact: (state, action) => {
             const id = action.payload;
             let data = JSON.parse(state.countacts);
             data = data.filter((item) => item.id !== id);
             state.countacts = JSON.stringify(data);
+            saveDataToLocalStorage("contactsData",JSON.stringify(data));
         },
         EditeCountact: (state, action) => {
             const previousId = action.payload.previousId;

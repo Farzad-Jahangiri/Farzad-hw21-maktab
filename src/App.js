@@ -10,9 +10,7 @@ function App() {
 
   useEffect(()=>{
     if(chenge){
-      console.log(chenge);
       setmyStateEdit(chenge)
-      // setChenge(false);
     }
   },[chenge])
 

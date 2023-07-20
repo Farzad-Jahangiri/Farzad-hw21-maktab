@@ -38,7 +38,8 @@ const useStyles = makeStyles({
     },
     button: {
         width: "60vw",
-        height: "3rem"
+        height: "3rem",
+        fontWeight:"900",
     },
     cardCountact: {
         width: "26rem",
